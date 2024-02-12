@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Lato } from 'next/font/google';
 import '@/styles/main.scss';
 
-const lato = Lato({ subsets: ['latin'], weight: ['300', '400'] });
+const lato = Lato({ subsets: ['latin'], weight: ['300', '400', '700'] });
 
 export const metadata: Metadata = {
   title: 'Rule of Thumb',

@@ -1,4 +1,4 @@
-import { BannerBottom, BannerTop, Footer, Header, Navigation } from './page-components';
+import { BannerBottom, BannerTop, Footer, Header, Navigation, Rulings } from './page-components';
 
 const Home = () => {
   return (
@@ -7,7 +7,7 @@ const Home = () => {
       <Header />
       <div className="max-centered">
         <BannerTop />
-        Hi
+        <Rulings />
         <BannerBottom />
         <hr role="separator" />
         <Footer />
