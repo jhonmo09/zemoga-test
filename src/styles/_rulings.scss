@@ -4,6 +4,7 @@
   &__head {
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 
   h2 {
@@ -14,15 +15,118 @@
   &__content {
     margin-right: -12px;
     padding-right: 12px;
+    display: flex;
 
     &--grid {
-      display: flex;
+
       overflow-x: auto;
       gap: 16px;
 
       .card {
         width: 300px;
         flex: 1 0 auto;
+      }
+    }
+
+    &--list {
+      flex-direction: column;
+      gap: 14px;
+    }
+  }
+}
+
+.display-select {
+  position: relative;
+  width: 130px;
+  font-size: 11px;
+  color: var(--color-darker-gray);
+  text-transform: capitalize;
+
+  & * {
+    box-sizing: border-box;
+  }
+
+  &__current {
+    height: 32px;
+    border: 1px solid;
+    padding: 8px 16px;
+    cursor: pointer;
+    position: relative;
+
+    &::before {
+      position: absolute;
+      content: '';
+      //width: 10px;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid;
+      right: 8px;
+      top: 11px;
+    }
+  }
+
+  &__list {
+    position: absolute;
+    z-index: 4;
+    border: 1px solid;
+    width: 100%;
+    top: 100%;
+    left: 0;
+    margin-top: -1px;
+    opacity: 0;
+    transform: translateY(16px);
+    pointer-events: none;
+    transition: all 0.3s;
+
+    li {
+      height: 28px;
+      background-color: var(--color-white);
+      border-bottom: 1px solid;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+  }
+
+  &.open {
+    .display-select__list {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  }
+}
+
+@media (min-width: 600px) {
+  .rulings {
+    //padding: 0;
+
+    &__content {
+      margin-left: 0;
+      padding-right: 0;
+      margin-right: 0;
+
+      &--grid {
+        overflow-x: visible;
+        flex-wrap: wrap;
+        gap: 22px;
+
+        .card {
+          width: calc(50% - 12px);
+          flex: 0 1 auto;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 900px) {
+  .rulings {
+    &__content {
+      &--grid {
+        .card {
+          width: calc(33.3% - 15px);
+        }
       }
     }
   }

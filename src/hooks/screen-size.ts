@@ -1,9 +1,5 @@
 import * as React from 'react';
-
-type ScreenSize = {
-  width: number;
-  height: number;
-};
+import type { ScreenSize } from '@/types';
 
 const useScreenSize = (): ScreenSize => {
   const [screenSize, setScreenSize] = React.useState<ScreenSize>({

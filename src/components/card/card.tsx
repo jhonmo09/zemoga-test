@@ -1,27 +1,14 @@
 import * as React from 'react';
+
 import Image from 'next/image';
-
 import { formatDistanceToNow } from 'date-fns';
+import type { CardProps } from '@/types';
 
-type CardProps = {
-  data: {
-    name: string;
-    description: string;
-    category: string;
-    picture: string;
-    lastUpdated: string;
-    votes: {
-      positive: number;
-      negative: number;
-    };
-  };
-  displayType: 'list' | 'grid';
-};
-const Card = (props: CardProps) => {
-  const { data, displayType } = props;
+const Card = ({ data, incrementPositive, incrementNegative, displayType }: CardProps) => {
+  const { votes } = data;
+  const positiveVotes = votes.positive;
+  const negativeVotes = votes.negative;
 
-  const [positiveVotes, setPositiveVotes] = React.useState<number>(data.votes.positive);
-  const [negativeVotes, setNegativeVotes] = React.useState<number>(data.votes.negative);
   const [isVoteNowDisabled, setIsVoteNowDisabled] = React.useState<boolean>(true);
   const [selectedThumb, setSelectedThumb] = React.useState<string | null>(null);
   const [userHasVoted, setUserHasVoted] = React.useState<boolean>(false);
@@ -46,11 +33,11 @@ const Card = (props: CardProps) => {
     } else {
       setUserHasVoted(true);
       if (selectedThumb === 'positive') {
-        setPositiveVotes(positiveVotes + 1);
+        incrementPositive(data.name);
       }
 
       if (selectedThumb === 'negative') {
-        setNegativeVotes(negativeVotes + 1);
+        incrementNegative(data.name);
       }
     }
   };
@@ -60,7 +47,7 @@ const Card = (props: CardProps) => {
 
   return (
     <article className={`card card--${displayType}`}>
-      <Image src={`/img/${data.picture}`} alt={data.name} width={300} height={300} />
+      <Image src={`/img/${data.picture}`} alt={data.name} width={300} height={300} className="card__image" />
       <div className="card__inner">
         <div className="card__content">
           <div className="card__title">
