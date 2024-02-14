@@ -1,11 +1,7 @@
-import { State, Action } from '@/types';
+import { State, Action, CardData } from '@/types';
 
-import { useEffect, useReducer } from 'react';
-
-const init = (initialState: State): State => {
-  const dataFromStorage = localStorage.getItem('cardVotes');
-  return dataFromStorage ? JSON.parse(dataFromStorage) : initialState;
-};
+import { useEffect, useLayoutEffect, useReducer, useState } from 'react';
+import { useFetchLocalJson } from '.';
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -24,26 +20,41 @@ const reducer = (state: State, action: Action): State => {
   }
 };
 
-const useCardVotes = (data: State) => {
-  const [state, dispatch] = useReducer(reducer, data, init);
+const useCardVotes = () => {
+  const { data } = useFetchLocalJson('/data/data.json');
 
+  // Inicialización del estado desde localStorage si está disponible,
+  // de lo contrario, usamos un estado vacío y esperamos la carga de datos.
+  const init = (): State => {
+    const dataFromStorage = localStorage.getItem('cardVotes');
+    return dataFromStorage ? JSON.parse(dataFromStorage) : [];
+  };
+
+  const [state, dispatch] = useReducer(reducer, [], init);
+
+  // Efecto para inicializar el estado con los datos de la API si localStorage está vacío.
   useEffect(() => {
-    const savedData = localStorage.getItem('cardVotes');
-    if (savedData) {
-      dispatch({ type: 'INITIALIZE', data: JSON.parse(savedData) });
-    } else {
-      dispatch({ type: 'INITIALIZE', data });
+    if (data && !localStorage.getItem('cardVotes')) {
+      dispatch({ type: 'INITIALIZE', data: data.data });
     }
-  }, []);
+  }, [data]);
 
+  // Efecto para guardar el estado en localStorage cada vez que cambia.
   useEffect(() => {
-    localStorage.setItem('cardVotes', JSON.stringify(state));
+    if (state.length > 0) {
+      localStorage.setItem('cardVotes', JSON.stringify(state));
+    }
   }, [state]);
 
-  const incrementPositive = (name: string) => dispatch({ type: 'INCREMENT_POSITIVE', name });
-  const incrementNegative = (name: string) => dispatch({ type: 'INCREMENT_NEGATIVE', name });
+  const incrementPositive = (name: string) => {
+    dispatch({ type: 'INCREMENT_POSITIVE', name });
+  };
 
-  return { state, incrementPositive, incrementNegative, dispatch };
+  const incrementNegative = (name: string) => {
+    dispatch({ type: 'INCREMENT_NEGATIVE', name });
+  };
+
+  return { state, incrementPositive, incrementNegative };
 };
 
 export default useCardVotes;

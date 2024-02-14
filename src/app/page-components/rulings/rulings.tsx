@@ -14,11 +14,7 @@ const Rulings = (props: RulingsProps) => {
   const [displayType, setDisplayType] = React.useState<'list' | 'grid'>('grid');
   const [openDropDown, setOpenDropdown] = React.useState<boolean>(false);
 
-  const { data, loading, error } = useFetchLocalJson('/data/data.json');
-
-  const cards: CardData[] = data?.data || [];
-
-  const { state, incrementPositive, incrementNegative, dispatch } = useCardVotes(cards);
+  const { state, incrementPositive, incrementNegative } = useCardVotes();
 
   const handleDropdownToggle = () => {
     setOpenDropdown(!openDropDown);
@@ -29,11 +25,7 @@ const Rulings = (props: RulingsProps) => {
     setDisplayType(value);
   };
 
-  React.useEffect(() => {
-    if (data) {
-      dispatch({ type: 'INITIALIZE', data: cards });
-    }
-  }, [data]);
+  console.log('state', state);
 
   return (
     <section className="rulings">
