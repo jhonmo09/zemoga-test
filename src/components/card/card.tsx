@@ -30,6 +30,7 @@ const Card = ({ data, incrementPositive, incrementNegative, displayType }: CardP
     if (userHasVoted) {
       setUserHasVoted(false);
       setSelectedThumb(null);
+      setIsVoteNowDisabled(true);
     } else {
       setUserHasVoted(true);
       if (selectedThumb === 'positive') {
