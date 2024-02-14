@@ -23,8 +23,6 @@ const reducer = (state: State, action: Action): State => {
 const useCardVotes = () => {
   const { data } = useFetchLocalJson('/data/data.json');
 
-  // Inicialización del estado desde localStorage si está disponible,
-  // de lo contrario, usamos un estado vacío y esperamos la carga de datos.
   const init = (): State => {
     const dataFromStorage = localStorage.getItem('cardVotes');
     return dataFromStorage ? JSON.parse(dataFromStorage) : [];
@@ -32,14 +30,12 @@ const useCardVotes = () => {
 
   const [state, dispatch] = useReducer(reducer, [], init);
 
-  // Efecto para inicializar el estado con los datos de la API si localStorage está vacío.
   useEffect(() => {
     if (data && !localStorage.getItem('cardVotes')) {
       dispatch({ type: 'INITIALIZE', data: data.data });
     }
   }, [data]);
 
-  // Efecto para guardar el estado en localStorage cada vez que cambia.
   useEffect(() => {
     if (state.length > 0) {
       localStorage.setItem('cardVotes', JSON.stringify(state));

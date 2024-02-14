@@ -1,4 +1,73 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Project Next.js Documentation
+
+## Introduction
+
+This project is a web application developed using Next.js, a popular framework based on React. It is designed for conducting a technical test and demonstrates the use of custom hooks, local storage, and state management in a React application.
+
+## Project Structure
+
+The project follows the typical structure of a Next.js application:
+
+- `app/`: Contains the application pages.
+- `components/`: Includes the React components used in the application.
+- `hooks/`: Houses custom hooks, including useCardVotes.
+- `types`: Defines the types and interfaces used throughout the application.
+- `styles/`: Contains CSS style files.
+- `__tests__`: Cointains some unit tests.
+
+## Custom Hook: useCardVotes
+
+### Purpose
+
+The `useCardVotes` hook manages card votes in the application. It maintains the state of votes and synchronizes this state with the browser's `localStorage` to persist data between sessions.
+
+### Functionality
+
+- **Initialization:** Upon loading the application, the hook attempts to retrieve the vote state from `localStorage`. If no data is available, it initializes with a default state obtained through the `useFetchLocalJson` hook.
+- **Vote Increment:** Provides functions to increment positive and negative votes for each card.
+- **Data Persistence:** Changes in the vote state are automatically saved in `localStorage` to maintain persistence.
+
+### Code
+
+```javascript
+const useCardVotes = () => {
+  const { data } = useFetchLocalJson('/data/data.json');
+
+  // State initialization from localStorage if available,
+  // otherwise we use an empty state and wait for data to load.
+  const init = (): State => {
+    const dataFromStorage = localStorage.getItem('cardVotes');
+    return dataFromStorage ? JSON.parse(dataFromStorage) : [];
+  };
+
+  const [state, dispatch] = useReducer(reducer, [], init);
+
+  // Effect to initialize state with API data if localStorage is empty.
+  useEffect(() => {
+    if (data && !localStorage.getItem('cardVotes')) {
+      dispatch({ type: 'INITIALIZE', data: data.data });
+    }
+  }, [data]);
+
+  // Effect to save state to localStorage every time it changes.
+  useEffect(() => {
+    if (state.length > 0) {
+      localStorage.setItem('cardVotes', JSON.stringify(state));
+    }
+  }, [state]);
+
+  //Add positive or negative votes to the card in the stored data.
+  const incrementPositive = (name: string) => {
+    dispatch({ type: 'INCREMENT_POSITIVE', name });
+  };
+
+  const incrementNegative = (name: string) => {
+    dispatch({ type: 'INCREMENT_NEGATIVE', name });
+  };
+
+  return { state, incrementPositive, incrementNegative };
+};
+```
 
 ## Getting Started
 
@@ -15,22 +84,3 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

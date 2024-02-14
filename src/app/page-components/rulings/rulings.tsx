@@ -25,8 +25,6 @@ const Rulings = (props: RulingsProps) => {
     setDisplayType(value);
   };
 
-  console.log('state', state);
-
   return (
     <section className="rulings">
       <div className="rulings__head">
